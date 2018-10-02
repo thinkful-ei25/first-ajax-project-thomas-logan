@@ -15,11 +15,7 @@ const API_KEY = 'AIzaSyCFqTqgsaYQe2MWggOTbdX4DZnWImpE_9U';
   }
 */
 const store = {
-  videos: [{
-    id: '98ds8fbsdy67',
-    title: 'Cats dancing the Macarena',
-    thumbnail: 'https://img.youtube.com/some/thumbnail.jpg'
-  }]
+  videos: []
 };
 
 // TASK: Add the Youtube Search API Base URL here:
@@ -83,9 +79,9 @@ const decorateResponse = function(response) {
 };
 
 // testing
-fetchVideos('cats',(response) => {
-  console.log(decorateResponse(response));
-});
+// fetchVideos('cats',(response) => {
+//   console.log(decorateResponse(response));
+// });
 
 /**
  * @function generateVideoItemHtml
@@ -98,8 +94,9 @@ fetchVideos('cats',(response) => {
 // TEST IT!
 const generateVideoItemHtml = function(video) {
   return `
-    <li>
-      <img src="${video.thumbnail}" alt="${video.title}"/>
+    <li video-id="${video.id}">
+      <h3>${video.title}</h3>
+      <div><img src="${video.thumbnail}" alt="${video.title}"/></div>
     </li>
       `;
 };
@@ -119,7 +116,7 @@ const generateVideoItemHtml = function(video) {
 // 1. Set the received array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-
+  store.videos = videos;
 };
 
 
@@ -132,7 +129,8 @@ const addVideosToStore = function(videos) {
 // 2. Add this array of DOM elements to the appropriate DOM element
 // TEST IT!
 const render = function() {
-
+  const html = store.videos.map(video => generateVideoItemHtml(video));
+  $('.results').html(html);
 };
 
 /**
@@ -152,11 +150,22 @@ const render = function() {
 //   g) Inside the callback, run the `render` function 
 // TEST IT!
 const handleFormSubmit = function() {
-
+  $('form').submit(event => {
+    event.preventDefault();
+    const searchTerm = $('#search-term').val();
+    console.log(searchTerm);
+    $('#search-term').val('');
+    fetchVideos(searchTerm, response => {
+      const decoratedResponse = decorateResponse(response);
+      addVideosToStore(decoratedResponse);
+      render();
+    });
+  });
 };
 
 // When DOM is ready:
 $(function () {
   // TASK:
   // 1. Run `handleFormSubmit` to bind the event listener to the DOM
+  handleFormSubmit();
 });
