@@ -1,4 +1,5 @@
-const API_KEY = 'YOUR_KEY_HERE';
+'use strict';
+const API_KEY = 'AIzaSyCFqTqgsaYQe2MWggOTbdX4DZnWImpE_9U';
 
 /*
   We want our store to hold an array of "decorated" video objects - i.e. objects that
@@ -14,12 +15,16 @@ const API_KEY = 'YOUR_KEY_HERE';
   }
 */
 const store = {
-  videos: []
+  videos: [{
+    id: '98ds8fbsdy67',
+    title: 'Cats dancing the Macarena',
+    thumbnail: 'https://img.youtube.com/some/thumbnail.jpg'
+  }]
 };
 
 // TASK: Add the Youtube Search API Base URL here:
 // Documentation is here: https://developers.google.com/youtube/v3/docs/search/list#usage
-const BASE_URL = '';
+const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 /**
  * @function fetchVideos
@@ -36,8 +41,18 @@ const BASE_URL = '';
 //
 // TEST IT! Execute this function and console log the results inside the callback.
 const fetchVideos = function(searchTerm, callback) {
+  const query = {
+    part: 'snippet',
+    key: API_KEY,
+    q: searchTerm
+  };
 
+  $.getJSON(BASE_URL, query, callback);
 };
+ //testing
+// fetchVideos('cats', response => {
+//   console.log(response);
+// });
 
 /**
  * @function decorateResponse
@@ -54,9 +69,23 @@ const fetchVideos = function(searchTerm, callback) {
 //
 // TEST IT! Grab an example API response and send it into the function - make sure
 // you get back the object you want.
-const decorateResponse = function(response) {
 
+
+const decorateResponse = function(response) {
+  const decorated = response.items.map((item) =>{
+    return {
+      id: item.id.videoId,
+      title: item.snippet.title,
+      thumbnail: item.snippet.thumbnails.medium.url
+    };
+  });
+  return decorated;
 };
+
+// testing
+fetchVideos('cats',(response) => {
+  console.log(decorateResponse(response));
+});
 
 /**
  * @function generateVideoItemHtml
@@ -68,8 +97,18 @@ const decorateResponse = function(response) {
 // 1. Using the decorated object, return an HTML string containing all the expected
 // TEST IT!
 const generateVideoItemHtml = function(video) {
-
+  return `
+    <li>
+      <img src="${video.thumbnail}" alt="${video.title}"/>
+    </li>
+      `;
 };
+
+//testing
+// fetchVideos('cats',(response) => {
+//   console.log(decorateResponse(response));
+// });
+
 
 /**
  * @function addVideosToStore
