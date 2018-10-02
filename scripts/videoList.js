@@ -16,12 +16,15 @@ const videoList = (function(){
   const generateListItem = function(video){
     return `
         <li video-id="${video.id}">
-          <a href="https://www.youtube.com/watch?v=${video.id}"><h3>${video.title}</h3></a>
-          <div><a href="https://www.youtube.com/watch?v=${video.id}"><img src="${video.thumbnail}" alt="${video.title}"/></a></div>
+        <a href="https://www.youtube.com/watch?v=${video.id}"><h3>${video.title}</h3></a>
+        <div class="videowrapper">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/${video.id}" frameborder="0" allowfullscreen></iframe>
+        </div>
         </li>
           `;
   };
-
+      // <a href="https://www.youtube.com/watch?v=${video.id}"><h3>${video.title}</h3></a>
+          // <div><a href="https://www.youtube.com/watch?v=${video.id}"><img src="${video.thumbnail}" alt="${video.title}"/></a></div>
   const render = function() {
     const html = store.videos.map(video => generateListItem(video));
     $('.results').html(html);
